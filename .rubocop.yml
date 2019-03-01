@@ -5,8 +5,6 @@ AllCops:
     - bin/*
     - vendor/ruby/**/*
     - .licenses/**/*
-Rails:
-  Enabled: true
 Metrics:
   Exclude:
     - Rakefile
