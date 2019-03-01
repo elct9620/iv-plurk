@@ -28,6 +28,7 @@ module IV
       def subscribe(&_block)
         continue = true
         while continue
+          Signal.trap(:INT) { return }
           res = Net::HTTP.get(URI(channel.server))
           continue = yield Oj.load(res[COMET_RULE, 1])
         end

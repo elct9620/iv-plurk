@@ -41,3 +41,5 @@ IV::Plurk.use(client) do
     continue
   end
 end
+
+puts 'Bye!'
