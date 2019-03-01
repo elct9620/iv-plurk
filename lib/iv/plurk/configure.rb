@@ -40,6 +40,10 @@ module IV
 
         true
       end
+
+      def hmac_key
+        @hmac_key ||= "#{@consumer_secret}&#{@oauth_secret}"
+      end
     end
   end
 end
