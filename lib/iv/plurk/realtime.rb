@@ -6,6 +6,8 @@ module IV
   module Plurk
     # The realtime API
     class Realtime
+      COMET_RULE = /CometChannel\.scriptCallback\((.*)\)/.freeze
+
       include DirectCallable
 
       Channel = Struct.new(:channel, :server)
@@ -18,9 +20,17 @@ module IV
         res = @client.get('Realtime/getUserChannel')
         json = Oj.load(res.body)
         Channel.new(
-          channel: json['channel_name'],
-          server: json['comet_server']
+          json['channel_name'],
+          json['comet_server']
         )
+      end
+
+      def subscribe(&_block)
+        continue = true
+        while continue
+          res = Net::HTTP.get(URI(channel.server))
+          continue = yield Oj.load(res[COMET_RULE, 1])
+        end
       end
     end
   end
