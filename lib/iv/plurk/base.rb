@@ -9,8 +9,9 @@ module IV
       def use(client = Client.default, &_block)
         current = Plurk.current
         Plurk.current = client
-        yield
+        res = yield
         Plurk.current = current
+        res
       end
     end
   end
