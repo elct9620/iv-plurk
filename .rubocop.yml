@@ -1,0 +1,14 @@
+AllCops:
+  TargetRubyVersion: 2.5.3
+  DisplayCopNames: true
+  Exclude:
+    - bin/*
+    - vendor/ruby/**/*
+    - .licenses/**/*
+Rails:
+  Enabled: true
+Metrics:
+  Exclude:
+    - Rakefile
+    - Gemfile
+    - spec/**/*
