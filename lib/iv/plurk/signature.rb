@@ -9,24 +9,17 @@ module IV
     # Signature the request
     class Signature
       class << self
-        def sign!(request, params)
-          new(request, params).sign!
+        def sign!(request)
+          new(request).sign!
         end
       end
 
-      def initialize(request, params = nil)
+      def initialize(request)
         @request = request
-        @params = params || params_from_request
       end
 
       def sign!
-        return if signed?
-
-        @request.uri.query =
-          URI.encode_www_form(
-            @params.merge(oauth_signature: signature)
-          )
-        @request
+        signature
       end
 
       def signed?
@@ -43,31 +36,23 @@ module IV
         @signature ||=
           Base64.encode64(
             OpenSSL::HMAC.digest(
-              'sha1', Configure.hmac_key, base
+              'sha1', @request.credential.hmac_key, base
             )
-          )
+          ).chomp
       end
 
       private
 
       def escaped_endpoint
         @escaped_endpoint ||=
-          CGI.escape(
-            "#{@request.uri.scheme}://" \
-            "#{@request.uri.host}" \
-            "#{@request.uri.path}"
-          )
+          CGI.escape(@request.uri.to_s)
       end
 
       def escaped_query
         @escaped_query ||=
           CGI.escape(
-            URI.encode_www_form(@params)
+            URI.encode_www_form(@request.params)
           )
-      end
-
-      def params_from_request
-        URI.decode_www_form(@request.uri.query || '').to_h
       end
     end
   end
