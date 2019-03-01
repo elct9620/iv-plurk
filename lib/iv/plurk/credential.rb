@@ -8,11 +8,14 @@ module IV
                     :oauth_token, :oauth_secret
 
       # TODO: Support normal OAuth flow
-      def initialize
-        @consumer_key = ENV['PLURK_CONSUMER_KEY']
-        @consumer_secret = ENV['PLURK_CONSUMER_SECRET']
-        @oauth_token = ENV['PLURK_OAUTH_TOKEN']
-        @oauth_secret = ENV['PLURK_OAUTH_SECRET']
+      def initialize(
+        consumer_key: nil, consumer_secret: nil,
+        oauth_token: nil, oauth_secret: nil
+      )
+        @consumer_key = consumer_key || ENV['PLURK_CONSUMER_KEY']
+        @consumer_secret = consumer_secret || ENV['PLURK_CONSUMER_SECRET']
+        @oauth_token = oauth_token || ENV['PLURK_OAUTH_TOKEN']
+        @oauth_secret = oauth_secret || ENV['PLURK_OAUTH_SECRET']
       end
 
       def satisfied?

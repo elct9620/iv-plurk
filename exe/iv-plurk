@@ -1,4 +1,43 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
+require 'net/http'
+require 'oj'
+
 require 'iv/plurk'
+require 'iv/plurk/command_option'
+
+Oj.default_options = { mode: :rails }
+
+# TODO: Wrapper into class
+option = IV::Plurk::CommandOption.load
+raise 'Webhook URL not configured' if option.webhook_url.nil?
+
+credential = IV::Plurk::Credential.new(
+  consumer_key: option.consumer_key,
+  consumer_secret: option.consumer_secret,
+  oauth_token: option.oauth_token,
+  oauth_secret: option.oauth_secret
+)
+
+client = IV::Plurk::Client.new(credential)
+
+continue = true
+
+Signal.trap(:TERM) { continue = false }
+Signal.trap(:INT) { continue = false }
+
+uri = URI(option.webhook_url)
+
+IV::Plurk.use(client) do
+  IV::Plurk::Realtime.subscribe do |res|
+    req = Net::HTTP::Post.new(uri)
+    req.body = Oj.dump(res.fetch('data', []))
+    puts 'Receive new Plurk events'
+    Net::HTTP
+      .start(uri.host, uri.port, use_ssl: uri.scheme == 'https') do |http|
+      http.request(req)
+    end
+    continue
+  end
+end
