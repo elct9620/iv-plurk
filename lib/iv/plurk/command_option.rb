@@ -19,6 +19,7 @@ module IV
       def initialize
         super
 
+        @program_name = 'IV-Plurk'
         self.banner = 'Illustrator Vision - Plurk Watcher'
 
         configure_consumer
@@ -30,6 +31,10 @@ module IV
       def parse!(args)
         super
         self
+      end
+
+      def version
+        VERSION
       end
 
       private
