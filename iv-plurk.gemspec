@@ -28,7 +28,7 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency 'oj'
 
-  spec.add_development_dependency 'bundler', '~> 2.0'
+  spec.add_development_dependency 'bundler', '~> 1.17'
   spec.add_development_dependency 'bundler-audit'
   spec.add_development_dependency 'overcommit'
   spec.add_development_dependency 'rake', '~> 10.0'
